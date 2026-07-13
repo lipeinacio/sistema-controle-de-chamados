@@ -20,3 +20,13 @@ if (formulario) {
     }
   });
 }
+
+document.querySelectorAll('[data-confirmacao]').forEach((formularioComConfirmacao) => {
+  formularioComConfirmacao.addEventListener('submit', (evento) => {
+    const mensagem = formularioComConfirmacao.dataset.confirmacao;
+
+    if (mensagem && !window.confirm(mensagem)) {
+      evento.preventDefault();
+    }
+  });
+});
