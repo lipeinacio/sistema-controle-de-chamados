@@ -1,61 +1,69 @@
 # Sistema de Controle de Chamados Internos
 
-Aplicação web para cadastrar e acompanhar solicitações internas. O projeto foi desenvolvido em PHP puro, sem frameworks, com persistência em PostgreSQL.
+Projeto desenvolvido em PHP puro para cadastrar e acompanhar solicitações internas. Os dados ficam armazenados em PostgreSQL.
 
-## Funcionalidades
+## Telas e requisitos
 
-- Cadastro de solicitações com título e descrição;
-- validação dos campos no navegador e no servidor;
-- listagem por ordem de criação;
-- conclusão e cancelamento de solicitações;
-- mensagens de retorno para todas as operações.
+### Cadastro de solicitação
 
-## Tecnologias
+O formulário possui os campos título e descrição. Os dois são obrigatórios e são validados no navegador e novamente no servidor. Depois do cadastro, o sistema salva a solicitação com o status inicial `Pendente` e exibe uma mensagem de sucesso.
 
-- PHP 8 com PDO;
-- PostgreSQL;
-- HTML, CSS e JavaScript;
-- Docker e Docker Compose para o ambiente local.
+![Tela de cadastro de solicitação](docs/images/cadastro.png)
+
+### Listagem de solicitações
+
+A listagem exibe ID, título, descrição, status e data de cadastro. Uma solicitação pendente pode ser finalizada, alterando o status para `Concluido`. O botão cancelar pede confirmação antes de excluir o registro do banco.
+
+![Tela de listagem de solicitações](docs/images/listagem.png)
+
+## Tecnologias utilizadas
+
+- PHP 8 com PDO
+- PostgreSQL
+- HTML, CSS e JavaScript
+- Docker e Docker Compose
 
 ## Como executar
 
-É necessário ter Docker com o plugin Docker Compose instalado.
+Usei Docker Compose para deixar o PHP com o driver `pdo_pgsql` e o PostgreSQL prontos para uso, sem depender da configuração da máquina. O Docker é opcional, mas é a forma mais rápida de testar o projeto.
+
+Com Docker e Docker Compose instalados, execute:
 
 ```bash
 docker compose up -d --build
 ```
 
-A aplicação ficará disponível em [http://localhost:8088](http://localhost:8088). O banco e a tabela são criados automaticamente na primeira execução.
+Depois acesse [http://localhost:8088](http://localhost:8088). A tabela do banco é criada automaticamente na primeira execução.
 
-Caso a porta `8088` esteja ocupada, escolha outra ao iniciar:
+Se a porta `8088` já estiver em uso, é possível escolher outra:
 
 ```bash
 APP_PORT=8090 docker compose up -d
 ```
 
-Para encerrar o ambiente:
+Para encerrar:
 
 ```bash
 docker compose down
 ```
 
-## Teste de integração
+## Como testar
 
-Com os contêineres em execução, rode:
+Além do teste manual pelas duas telas, existe um teste de integração que percorre o cadastro, a listagem, a conclusão e a exclusão:
 
 ```bash
 docker compose exec app php tests/integracao.php
 ```
 
-O teste percorre o cadastro, a listagem, a conclusão e a exclusão dentro de uma transação, sem deixar registros no banco.
+O teste roda dentro de uma transação e não deixa registros no banco.
 
 ## Execução sem Docker
 
-Também é possível executar o projeto com PHP 8 e PostgreSQL instalados na máquina. O PHP deve possuir o driver `pdo_pgsql`.
+Para executar diretamente na máquina, é necessário ter PHP 8 com `pdo_pgsql` e PostgreSQL instalados.
 
-1. Crie um banco PostgreSQL e execute o arquivo `database/schema.sql`;
-2. configure as variáveis `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`;
-3. inicie o servidor apontando para a pasta pública:
+1. Crie o banco e execute o arquivo `database/schema.sql`.
+2. Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`.
+3. Inicie o servidor apontando para a pasta pública:
 
 ```bash
 php -S localhost:8088 -t public

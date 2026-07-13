@@ -100,7 +100,7 @@ $mensagem = obterMensagem();
                         name="titulo"
                         maxlength="150"
                         value="<?= escapar($titulo) ?>"
-                        placeholder="Ex.: Acesso ao sistema financeiro"
+                        placeholder="Ex.: Acesso ao NPCOB"
                         required
                         autofocus
                     >
