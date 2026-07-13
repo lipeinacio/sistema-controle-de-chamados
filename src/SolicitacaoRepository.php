@@ -8,14 +8,20 @@ final class SolicitacaoRepository
     {
     }
 
-    public function cadastrar(string $titulo, string $descricao): void
+    public function cadastrar(string $titulo, string $descricao): int
     {
-        $sql = 'INSERT INTO solicitacoes (titulo, descricao) VALUES (:titulo, :descricao)';
+        $sql = <<<'SQL'
+            INSERT INTO solicitacoes (titulo, descricao)
+            VALUES (:titulo, :descricao)
+            RETURNING id
+            SQL;
         $comando = $this->conexao->prepare($sql);
         $comando->execute([
             'titulo' => $titulo,
             'descricao' => $descricao,
         ]);
+
+        return (int) $comando->fetchColumn();
     }
 
     public function listar(): array
